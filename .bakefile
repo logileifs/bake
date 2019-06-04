@@ -1,0 +1,5 @@
+hello: 'echo "Hello {0} from {arg1}"'
+
+test: 'python3 -m unittest tests/*'
+
+cat: 'cat no/exists.txt'
