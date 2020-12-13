@@ -1,0 +1,27 @@
+---
+recipes:
+  test: &test
+    vars:
+      var1: 'harry potter'
+      var2: '2'
+      build_file: main.go
+    steps:
+      - echo test step one
+      - echo "test step two"
+      - echo "I am watching {{.var1}}"
+      - go build main.go
+  build: &build
+    vars:
+      build_var1: 'build_var1'
+      build_var2: '2'
+      build_var3: 'shell(echo "I will be executed in shell")'
+    steps:
+      - echo "build step one"
+      - echo "build step two"
+
+watch:
+  dirs:
+    - '.'
+  recipes:
+    - *test
+    - *build
