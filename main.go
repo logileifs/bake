@@ -16,10 +16,24 @@ func exec_command(command string) {
 	var args = strings.Split(command, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
+}
+
+func handle_step(step string, vars map[string]interface{}) string {
+	buf := &bytes.Buffer{}
+	tmpl, err := template.New("").Parse(step)
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.Execute(buf, vars)
+	if err != nil {
+		panic(err)
+	}
+	return buf.String()
 }
 
 func do_recipe(recipe interface{}) {
@@ -30,16 +44,8 @@ func do_recipe(recipe interface{}) {
 	var vars = recipe.(map[string]interface{})["vars"]
 	//fmt.Println("vars: ", vars)
 	for _, step := range steps.([]interface{}) {
-		buf := &bytes.Buffer{}
-		tmpl, err := template.New("").Parse(step.(string))
-		if err != nil {
-			panic(err)
-		}
-		err = tmpl.Execute(buf, vars)
-		if err != nil {
-			panic(err)
-		}
-		step_formatted := buf.String()
+		step_formatted := handle_step(step.(string), vars.(map[string]interface{}))
+		fmt.Println("step_formatted: ", step_formatted)
 		exec_command(step_formatted)
 	}
 }

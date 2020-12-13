@@ -8,16 +8,18 @@ recipes:
     steps:
       - echo test step one
       - echo "test step two"
-      - echo "I am watching {{.var1}}"
-      - go build main.go
+      - echo I am watching {{.var1}}
+      #- go build main.go
   build: &build
     vars:
       build_var1: 'build_var1'
       build_var2: '2'
-      build_var3: 'shell(echo "I will be executed in shell")'
+      NEW_BUILD_ID: shell(openssl rand -hex 3)
+      REPOSITORY: logileifs
+      BUILD_ID: ab12c3
     steps:
-      - echo "build step one"
-      - echo "build step two"
+      - docker build -t {{.REPOSITORY}}/vault-init:{{.BUILD_ID}} .
+      - docker push {{.REPOSITORY}}/vault-init:{{.BUILD_ID}}
 
 watch:
   dirs:
