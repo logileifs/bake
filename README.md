@@ -3,11 +3,11 @@ Bake is a modern take on Make
 
 # install
 ## macos
-`curl -L https://github.com/logileifs/bake/releases/download/0.1.0/bake-darwin-amd64 > ~/.local/bin/bake`
-`chmod +x ~/.local/bin/bake`
+`curl -L https://github.com/logileifs/bake/releases/download/0.1.0/bake-darwin-amd64 > ~/.local/bin/bake`  
+`chmod +x ~/.local/bin/bake`  
 ## linux
-`curl -L https://github.com/logileifs/bake/releases/download/0.1.0/bake-linux-amd64 > ~/.local/bin/bake`
-`chmod +x ~/.local/bin/bake`
+`curl -L https://github.com/logileifs/bake/releases/download/0.1.0/bake-linux-amd64 > ~/.local/bin/bake`  
+`chmod +x ~/.local/bin/bake`  
 
 # usage
 `$ cat ./recipes.yml`
