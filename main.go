@@ -14,6 +14,7 @@ import "github.com/thatisuday/clapper"
 func exec_command(command string) {
 	//fmt.Println("exec_command: ", command)
 	var args = strings.Split(command, " ")
+	//fmt.Println("args: ", args)
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -21,6 +22,33 @@ func exec_command(command string) {
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
+}
+
+func eval_in_shell(statement string) string {
+	//fmt.Println("eval_in_shell: ", statement)
+	var args = strings.Split(statement, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+	out, err := cmd.Output()
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
+	return strings.Trim(string(out), "\n")
+}
+
+func evaluate_vars(vars map[string]interface{}) map[string]interface{} {
+	for key, value := range vars {
+		var has_prefix = strings.HasPrefix(value.(string), "shell(")
+		var has_suffix = strings.HasSuffix(value.(string), ")")
+		if has_prefix == true && has_suffix == true {
+			//fmt.Println(value, " has prefix and suffix")
+			var to_eval = strings.Split(
+				strings.Split(value.(string), "shell(")[1],
+				")",
+			)[0]
+			vars[key] = eval_in_shell(to_eval)
+		}
+	}
+	return vars
 }
 
 func handle_step(step string, vars map[string]interface{}) string {
@@ -44,8 +72,9 @@ func do_recipe(recipe interface{}) {
 	var vars = recipe.(map[string]interface{})["vars"]
 	//fmt.Println("vars: ", vars)
 	for _, step := range steps.([]interface{}) {
+		vars = evaluate_vars(vars.(map[string]interface{}))
 		step_formatted := handle_step(step.(string), vars.(map[string]interface{}))
-		fmt.Println("step_formatted: ", step_formatted)
+		//fmt.Println("step_formatted: ", step_formatted)
 		exec_command(step_formatted)
 	}
 }

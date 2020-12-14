@@ -5,11 +5,11 @@ recipes:
       var1: 'harry potter'
       var2: '2'
       build_file: main.go
+      from_shell: shell(openssl rand -hex 3)
     steps:
       - echo test step one
-      - echo "test step two"
+      - echo from_shell={{.from_shell}}
       - echo I am watching {{.var1}}
-      #- go build main.go
   build: &build
     vars:
       build_var1: 'build_var1'
@@ -22,8 +22,29 @@ recipes:
       - docker push {{.REPOSITORY}}/vault-init:{{.BUILD_ID}}
 
 watch:
-  dirs:
-    - '.'
-  recipes:
-    - *test
-    - *build
+  on_save:
+    dirs:
+      - '.'
+    recipes:
+      - lint:
+          vars: {}
+          steps:
+            - echo lint step 1
+            - echo lint step 2
+      - *test
+  on_commit:
+    dirs:
+      - './.git/'
+    recipes:
+      - *build
+      - deploy:
+          vars: {}
+          steps:
+            - echo deploy step 1
+            - echo deploy step 2
+#watch:
+#  dirs:
+#    - '.'
+#  recipes:
+#    - *test
+#    - *build
