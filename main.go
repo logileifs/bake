@@ -13,9 +13,7 @@ import "github.com/thatisuday/clapper"
 
 func exec_command(command string) {
 	//fmt.Println("exec_command: ", command)
-	var args = strings.Split(command, " ")
-	//fmt.Println("args: ", args)
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd := exec.Command("sh", "-c", command)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -26,8 +24,7 @@ func exec_command(command string) {
 
 func eval_in_shell(statement string) string {
 	//fmt.Println("eval_in_shell: ", statement)
-	var args = strings.Split(statement, " ")
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd := exec.Command("sh", "-c", statement)
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Printf("%v\n", err)
