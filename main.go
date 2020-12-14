@@ -2,6 +2,7 @@ package main
 
 import "os"
 import "fmt"
+import "time"
 import "bytes"
 import "strings"
 import "os/exec"
@@ -10,6 +11,11 @@ import "text/template"
 import "path/filepath"
 import "gopkg.in/yaml.v3"
 import "github.com/thatisuday/clapper"
+
+var version string = "development"
+var commit string = "nil"
+var build string = "nil"
+var date string = time.Now().Format("02-01-2006T15:04:05")
 
 func exec_command(command string) {
 	//fmt.Println("exec_command: ", command)
@@ -115,7 +121,7 @@ func main() {
 	//fmt.Println("file: ", file)
 	//fmt.Println("watch: ", watch)
 	if watch == true {
-
+		fmt.Println("watch = true")
 	}
 
 	path, _ := filepath.Abs(file)
@@ -124,13 +130,21 @@ func main() {
 		fmt.Println("failed to read file")
 		os.Exit(1)
 	}
-	var v interface{}
-	err = yaml.Unmarshal(data, &v)
-	//fmt.Print("yaml: ")
-	//fmt.Println(v)
-	var recipes = v.(map[string]interface{})["recipes"]
-	//fmt.Print("recipes: ")
-	//fmt.Println(recipes)
-	var recipe = recipes.(map[string]interface{})[recipe_name]
-	do_recipe(recipe)
+
+	if (recipe_name == "") {
+		fmt.Println("Version: ", version)
+		fmt.Println("Commit: ", commit)
+		fmt.Println("Build id: ", build)
+		fmt.Println("Build date: ", date)
+	} else {
+		var v interface{}
+		err = yaml.Unmarshal(data, &v)
+		//fmt.Print("yaml: ")
+		//fmt.Println(v)
+		var recipes = v.(map[string]interface{})["recipes"]
+		//fmt.Print("recipes: ")
+		//fmt.Println(recipes)
+		var recipe = recipes.(map[string]interface{})[recipe_name]
+		do_recipe(recipe)
+	}
 }
