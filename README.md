@@ -2,6 +2,7 @@
 Bake is a modern take on Make
 
 # usage
+`$ cat ./recipes.yml`
 ```yaml
 ---
 recipes:
