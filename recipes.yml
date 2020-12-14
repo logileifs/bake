@@ -2,6 +2,13 @@
 recipes:
   test: &test
     vars:
+      BUILD_ID: shell(openssl rand -hex 3)
+      TEST_DIR: ./tests/
+    steps:
+      - 'echo building new release with id: {{.BUILD_ID}}'
+      - echo testing files under {{.TEST_DIR}}
+  test2: &test2
+    vars:
       var1: 'harry potter'
       var2: '2'
       build_file: main.go

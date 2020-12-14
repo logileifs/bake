@@ -2,10 +2,26 @@
 Bake is a modern take on Make
 
 # usage
-`bake test`
-run the recipe **test** from *recipes.yml*
+```yaml
+---
+recipes:
+  test: &test
+    vars:
+      BUILD_ID: shell(openssl rand -hex 3)
+      TEST_DIR: ./tests/
+    steps:
+      - 'echo building new release with id: {{.BUILD_ID}}'
+      - echo testing files under {{.TEST_DIR}}
+```
+## run the recipe **test** from *recipes.yml*
+`$ bake test`
+produces output:
+```
+building new release with id: 9e86af
+testing files under ./tests/
+```
 
-`bake -f ./recipes.yml test`
+`$ bake -f ./recipes.yml test`
 does the same, just explicitly provides path to *recipes.yml*
 
 `bake test FILE=tests/testother.py`
