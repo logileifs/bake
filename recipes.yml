@@ -18,8 +18,10 @@ recipes:
       REPOSITORY: logileifs
       BUILD_ID: ab12c3
     steps:
-      - docker build -t {{.REPOSITORY}}/vault-init:{{.BUILD_ID}} .
-      - docker push {{.REPOSITORY}}/vault-init:{{.BUILD_ID}}
+      - 'echo "NEW_BUILD_ID: {{.NEW_BUILD_ID}}"'
+      #- echo docker build -t {{.REPOSITORY}}/vault-init:{{.NEW_BUILD_ID}} .
+      #- echo docker push {{.REPOSITORY}}/vault-init:{{.NEW_BUILD_ID}}
+      - echo {{.NEW_BUILD_ID}} > ./BUILD
 
 watch:
   on_save:
