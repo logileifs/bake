@@ -86,6 +86,13 @@ func start_watch() {
 	fmt.Println("starting watch")
 }
 
+func print_recipes_and_exit(recipes interface{}) {
+	for key, _ := range recipes.(map[string]interface{}) {
+		fmt.Print(key, " ")
+	}
+	os.Exit(0)
+}
+
 func main() {
 	// create a new registry
 	registry := clapper.NewRegistry()
@@ -95,6 +102,7 @@ func main() {
 	rootCommand.AddArg("recipe_name", "")
 	rootCommand.AddFlag("file", "f", false, "./recipes.yml")
 	rootCommand.AddFlag("watch", "w", true, "false")
+	rootCommand.AddFlag("comp", "c", true, "false")
 
 	// parse command-line arguments
 	command, err := registry.Parse(os.Args[1:])
@@ -117,6 +125,14 @@ func main() {
 	} else {
 		watch = true
 	}
+
+	comp_arg := command.Flags["comp"].Value
+	var comp = false
+	if comp_arg == "" {
+		comp = false
+	} else {
+		comp = true
+	}
 	//fmt.Println("recipe: ", recipe_name)
 	//fmt.Println("file: ", file)
 	//fmt.Println("watch: ", watch)
@@ -131,20 +147,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	if (recipe_name == "") {
-		fmt.Println("Version: ", version)
-		fmt.Println("Commit: ", commit)
-		fmt.Println("Build id: ", build)
-		fmt.Println("Build date: ", date)
-	} else {
+
+	if (recipe_name != "") || (comp) {
 		var v interface{}
 		err = yaml.Unmarshal(data, &v)
 		//fmt.Print("yaml: ")
 		//fmt.Println(v)
 		var recipes = v.(map[string]interface{})["recipes"]
-		//fmt.Print("recipes: ")
-		//fmt.Println(recipes)
+		if comp {
+			print_recipes_and_exit(recipes)
+		}
 		var recipe = recipes.(map[string]interface{})[recipe_name]
 		do_recipe(recipe)
+	} else {
+		fmt.Println("Version: ", version)
+		fmt.Println("Commit: ", commit)
+		fmt.Println("Build id: ", build)
+		fmt.Println("Build date: ", date)
 	}
 }
